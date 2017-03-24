@@ -10,89 +10,181 @@ namespace AssignmentComplete
   class Mine : IFactory
   {
 
-    class AddOreBoxToMine : IAction
-    {
-      Mine mine;
-      public AddOreBoxToMine(Mine mine)
-      {
-        this.mine = mine;
-      }
-      public void Run()
-      {
-        mine.ProductsToShip.Add(CreateOreBox(mine.Position + new Vector2(-80, 40 + -30 * mine.ProductsToShip.Count)));
-      }
-      Ore CreateOreBox(Vector2 position)
-      {
-        var box = new Ore(100, mine.oreBox);
-        box.Position = position;
-        return box;
-      }
-    }
+	class AddOreBoxToMine : IAction
+	{
+	  Mine mine;
+	  public AddOreBoxToMine(Mine mine)
+	  {
+		this.mine = mine;
+	  }
 
-    Texture2D mine, oreContainer, oreBox, truckTexture;
-    List<IStateMachine> processes;
-    ITruck waitingTruck;
-    bool isTruckReady = false;
-    Vector2 position;
-    List<IContainer> productsToShip;
+	  public void Run()
+	  {
+		mine.ProductsToShip.Add(CreateOreBox(mine.Position + new Vector2(-80, 40 + -30 * mine.ProductsToShip.Count)));
+	  }
 
-    public Mine(Vector2 position, Texture2D truck_texture, Texture2D mine, Texture2D ore_box, Texture2D ore_container)
-    {
-      processes = new List<IStateMachine>();
-      ProductsToShip = new List<IContainer>();
-      this.mine = mine;
-      this.truckTexture = truck_texture;
-      this.oreContainer = ore_container;
-      this.oreBox = ore_box;
-      this.position = position;
+	  Ore CreateOreBox(Vector2 position)
+	  {
+		var box = new Ore(100, mine.oreBox);
+		box.Position = position;
+		return box;
+	  }
+	}
 
+	Texture2D mine, oreContainer, oreBox, truckTexture;
+	List<IStateMachine> processes;
+	ITruck waitingTruck;
+	bool isTruckReady = false;
+	Vector2 position;
+	List<IContainer> productsToShip;
 
-      processes.Add(
-        new Repeat(new Seq(new Timer(1.0f),
-                           new Call(new AddOreBoxToMine(this)))));
-    }
+	public Mine(Vector2 position, Texture2D truck_texture, Texture2D mine, Texture2D ore_box, Texture2D ore_container)
+	{
+	  this.processes = new List<IStateMachine>();
+	  this.ProductsToShip = new List<IContainer>();
+	  this.mine = mine;
+	  this.truckTexture = truck_texture;
+	  this.oreContainer = ore_container;
+	  this.oreBox = ore_box;
+	  this.position = position;
 
 
-    public ITruck GetReadyTruck()
-    {
-      //not implemented yet
-      return null;
-    }
+	  processes.Add(
+		new Repeat(new Seq(new Timer(1.0f),
+						   new Call(new AddOreBoxToMine(this)))));
+	}
 
-    public Vector2 Position
-    {
-      get
-      {
-        return position;
-      }
-    }
-    public List<IContainer> ProductsToShip
-    {
-      get
-      {
-        return productsToShip;
-      }
-      set
-      {
-        productsToShip = value;
-      }
-    }
-    public void Draw(SpriteBatch spriteBatch)
-    {
-      foreach (var cart in ProductsToShip)
-      {
-        cart.Draw(spriteBatch);
-      }
-      spriteBatch.Draw(mine, Position, Color.White);
-    }
-    public void Update(float dt)
-    {
-      foreach (var process in processes)
-      {
-        process.Update(dt);
-      }
-    }
-    
+
+	public ITruck GetReadyTruck()
+	{
+	  //not implemented yet
+	  return null;
+	}
+
+	public Vector2 Position
+	{
+	  get
+	  {
+		return position;
+	  }
+	}
+	public List<IContainer> ProductsToShip
+	{
+	  get
+	  {
+		return productsToShip;
+	  }
+	  set
+	  {
+		productsToShip = value;
+	  }
+	}
+	public void Draw(SpriteBatch spriteBatch)
+	{
+	  foreach (var cart in ProductsToShip)
+	  {
+		cart.Draw(spriteBatch);
+	  }
+	  spriteBatch.Draw(mine, Position, Color.White);
+	}
+	public void Update(float dt)
+	{
+	  foreach (var process in processes)
+	  {
+		process.Update(dt);
+	  }
+	}
+	
   }
+
+    class Ikea : IFactory
+    {
+
+        class AddProductToIkea : IAction
+        {
+            Ikea ikea;
+            public AddProductToIkea(Ikea ikea)
+            {
+                this.ikea = ikea;
+            }
+
+            public void Run()
+            {
+                ikea.ProductsToShip.Add(CreateProductBox(ikea.Position + new Vector2(-80, 40 + -30 * ikea.ProductsToShip.Count)));
+            }
+
+            Ore CreateProductBox(Vector2 position)
+            {
+                var box = new Ore(100, ikea.productBox);
+                box.Position = position;
+                return box;
+            }
+        }
+
+        Texture2D ikea, productContainer, productBox, truckTexture;
+        List<IStateMachine> processes;
+        ITruck waitingTruck;
+        bool isTruckReady = false;
+        Vector2 position;
+        List<IContainer> productsToShip;
+
+        public Ikea(Vector2 position, Texture2D truck_texture, Texture2D ikea, Texture2D product_box, Texture2D product_container)
+        {
+            this.processes = new List<IStateMachine>();
+            this.ProductsToShip = new List<IContainer>();
+            this.ikea = ikea;
+            this.truckTexture = truck_texture;
+            this.productBox = product_box;
+            this.productContainer = product_container;
+            this.position = position;
+
+
+            processes.Add(
+              new Repeat(new Seq(new Timer(1.0f),
+                                 new Call(new AddProductToIkea(this)))));
+        }
+
+
+        public ITruck GetReadyTruck()
+        {
+            //not implemented yet
+            return null;
+        }
+
+        public Vector2 Position
+        {
+            get
+            {
+                return position;
+            }
+        }
+        public List<IContainer> ProductsToShip
+        {
+            get
+            {
+                return productsToShip;
+            }
+            set
+            {
+                productsToShip = value;
+            }
+        }
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach (var cart in ProductsToShip)
+            {
+                cart.Draw(spriteBatch);
+            }
+            spriteBatch.Draw(ikea, Position, Color.White);
+        }
+        public void Update(float dt)
+        {
+            foreach (var process in processes)
+            {
+                process.Update(dt);
+            }
+        }
+
+    }
 
 }
